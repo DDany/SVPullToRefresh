@@ -34,10 +34,10 @@
         int64_t delayInSeconds = 2.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [weakSelf.tableView beginUpdates];
-            [weakSelf.dataSource insertObject:[NSDate date] atIndex:0];
-            [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
-            [weakSelf.tableView endUpdates];
+//            [weakSelf.tableView beginUpdates];
+//            [weakSelf.dataSource insertObject:[NSDate date] atIndex:0];
+//            [weakSelf.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
+//            [weakSelf.tableView endUpdates];
             
             [weakSelf.tableView.pullToRefreshView stopAnimating];
         });
@@ -83,6 +83,16 @@
     NSDate *date = [self.dataSource objectAtIndex:indexPath.row];
     cell.textLabel.text = [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterNoStyle timeStyle:NSDateFormatterMediumStyle];
     return cell;
+}
+
+- (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [_tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (indexPath.row < self.dataSource.count - 2) {
+        [_tableView triggerPullToRefresh];
+    }else {
+        [_tableView triggerInfiniteScrolling];
+    }
 }
 
 @end
